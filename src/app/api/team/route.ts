@@ -32,43 +32,64 @@ export async function POST(request: NextRequest) {
     const code = request.cookies.get(SESSION_COOKIE_NAME)?.value;
 
     if (!code) {
-      return NextResponse.json(
-        { message: "Invalid player code" },
-        { status: 404 }
-      );
+      console.log("Invalid player code");
+      return NextResponse.json({ message: "Invalid player code" }, { status: 404 });
     }
 
-    const team = await prisma.team.findFirst({
-      where: {
-        id: teamId,
-      },
+    const player = await prisma.player.findFirst({
+      where: { code },
+      include: { team: true },
     });
 
-    if (team?.playerId) {
-      return NextResponse.json(
-        { message: "Team already has been assigned" },
-        { status: 400 }
-      );
+    if (!player) {
+      console.log("Player not found");
+      return NextResponse.json({ message: "Player not found" }, { status: 404 });
     }
 
-    const updatedPlayer = await prisma.player.update({
-      where: {
-        code,
-      },
-      data: {
-        team: {
-          connect: {
-            id: teamId,
-          },
-        },
-      },
+    const newTeam = await prisma.team.findFirst({
+      where: { id: teamId },
+      include: { Player: true },
     });
-    
-    return NextResponse.json({ player: updatedPlayer }, { status: 200 });
+
+    if (!newTeam) {
+      console.log("Team not found");
+      return NextResponse.json({ message: "Team not found" }, { status: 404 });
+    }
+
+    if (newTeam.Player && newTeam.Player.id !== player.id) {
+      console.log("Team already has been assigned");
+      return NextResponse.json({ message: "Team already has been chosen dumbass" }, { status: 400 });
+    }
+
+    console.log("Starting transaction to update player and team");
+
+    const updatedData = await prisma.$transaction(async (prisma) => {
+      if (player.teamId) {
+        // Unassign the player from the current team
+        await prisma.team.update({
+          where: { id: player.teamId },
+          data: { playerId: null },
+        });
+      }
+
+      const updatedPlayer = await prisma.player.update({
+        where: { id: player.id },
+        data: { teamId: newTeam.id },
+      });
+
+      const updatedTeam = await prisma.team.update({
+        where: { id: newTeam.id },
+        data: { playerId: updatedPlayer.id },
+      });
+
+      return { updatedPlayer, updatedTeam };
+    });
+
+    console.log("Transaction completed", updatedData);
+
+    return NextResponse.json({ player: updatedData.updatedPlayer, team: updatedData.updatedTeam }, { status: 200 });
   } catch (error) {
-    return NextResponse.json(
-      { message: (error as Error)?.message },
-      { status: 500 }
-    );
+    console.error("Error during POST method:", error);
+    return NextResponse.json({ message: (error as Error)?.message }, { status: 500 });
   }
 }

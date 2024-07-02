@@ -1,10 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import Link from "next/link";
 import AnimateWrapper from "../../components/AnimateWrapper";
 import TeamSelect from "@/components/TeamSelect";
 import { Team } from "@/types";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Home() {
   const [team, setTeam] = useState<Team | null>(null);
@@ -31,6 +34,12 @@ export default function Home() {
       if (res.ok) {
         router.push("/players");
       }
+      return res.json();
+    }).then((data) => {
+      toast.success(data.message);
+    }).catch((err) => {
+      setIsSaving(false);
+      toast.error("Failed to save team");
     });
   };
 
@@ -52,6 +61,7 @@ export default function Home() {
           <button className="bg-red-600 text-white py-2 px-4 rounded" onClick={handleSave}>
             {isSaving ? "SAVING..." : "SAVE"}
           </button>
+          <Link href="/players" className="bg-red-600 text-white py-2 px-4 rounded">Player List</Link> 
         </div>
       </div>
     </AnimateWrapper>
