@@ -37,7 +37,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ToastContainer />
         <main
-          className="relative flex min-h-screen flex-col items-center p-4 pt-48 md:p-48 bg-cover bg-center"
+          className="relative flex min-h-screen h-full flex-col items-center p-4 pt-48 md:p-48 bg-cover bg-center"
           style={{
             backgroundImage:
               "url('https://media.contentapi.ea.com/content/dam/ea/college-football/college-football-25/images/2024/05/cfb25-hero-lg-homepage-dlx-xl-16x9.jpg.adapt.crop16x9.1920w.jpg')",
