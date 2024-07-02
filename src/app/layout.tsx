@@ -49,7 +49,7 @@ export default function RootLayout({
           </div>
           {children}
         </main>
-        <div className="absolute inset-0 bg-black opacity-50"></div>
+        <div className="absolute inset-0 bg-black min-h-screen opacity-50 h-full"></div>
       </body>
     </html>
   );
