@@ -33,7 +33,7 @@ export default function Home() {
             <p className="col-span-1">{player.name}</p>
             <div className="col-span-1 flex items-center gap-1">
               {!player.team && player.code === code ? (
-                <Link href={`/teams`} className="bg-red-600 text-white p-2 rounded-lg w-full">
+                <Link href={`/teams`} className="bg-red-600 text-white p-1 rounded-lg w-full">
                   Add Team
                 </Link>
               ) : (
