@@ -29,7 +29,7 @@ export default function Home() {
         <p className="col-span-1 text-red-600">Players</p>
         <p className="col-span-1 text-red-600">Team</p>
         {players.map((player: any) => (
-          <div key={player.id} className="col-span-2 grid grid-cols-2">
+          <div key={player.id} className="col-span-2 grid grid-cols-2 items-center">
             <p className="col-span-1">{player.name}</p>
             <div className="col-span-1 flex items-center gap-1">
               {!player.team && player.code === code ? (
