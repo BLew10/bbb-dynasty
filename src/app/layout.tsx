@@ -37,7 +37,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ToastContainer />
         <main
-          className="relative flex min-h-screen h-full flex-col items-center p-4 pt-48 md:p-48 bg-cover bg-center"
+          className="relative flex min-h-screen h-full flex-col items-center p-4 pt-48 md:p-48 pb-[50px] bg-cover bg-center"
           style={{
             backgroundImage:
               "url('https://media.contentapi.ea.com/content/dam/ea/college-football/college-football-25/images/2024/05/cfb25-hero-lg-homepage-dlx-xl-16x9.jpg.adapt.crop16x9.1920w.jpg')",
@@ -49,7 +49,7 @@ export default function RootLayout({
           </div>
           {children}
         </main>
-        <div className="absolute inset-0 bg-black min-h-screen opacity-50 h-full"></div>
+        <div className="fixed top-0 left-0 bottom-0 right-0 inset-0 bg-black opacity-50 h-full"></div>
       </body>
     </html>
   );
